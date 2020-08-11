@@ -4,8 +4,8 @@
   "description": "Novel & creative writing tool",
   "main": "main.js",
   "scripts": {
-    "start": "concurrently \"npm:electron-start\" \"npm:webpack-live\" -k -s first",
-    "start-safe": "npm run electron-start && npm run webpack-build",
+    "live": "npm run webpack-live",
+    "start": "npm run webpack-build",
     "webpack-live": "webpack --watch",
     "webpack-build": "webpack",
     "electron-start": "electron ./dist/electron.js"
@@ -26,7 +26,8 @@
     "style-loader": "^1.2.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "webpack-electron-reload": "^1.0.1"
   },
   "dependencies": {},
   "browserslist": {
