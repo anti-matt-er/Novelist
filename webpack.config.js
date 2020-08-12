@@ -1,10 +1,40 @@
+const SassThemeLoader = require("./src/sass-theme-loader");
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ElectronReloadPlugin = require('webpack-electron-reload')({
     path: path.join(__dirname, './dist/electron.js'),
 });
-  
+const module_rules = [
+  {
+      test: /\.(js|jsx)$/,
+      include: /src/,
+      exclude: /(node_modules|bower_components)/,
+      loader: "babel-loader",
+      options: { presets: ["@babel/env"] }
+  },
+  {
+    test: /\.css$/,
+    use: ["style-loader", "css-loader"]
+  },
+  {
+    test: /\.scss$/,
+    use: [
+      "style-loader",
+      "css-loader",
+      {
+        loader: "sass-loader",
+        options: {
+          sassOptions: {
+            functions: {
+              'get($keys)': SassThemeLoader.getThemeItem,
+            }
+          }
+        }
+      }
+    ]
+  }
+]
 
 module.exports = [
     {
@@ -12,23 +42,10 @@ module.exports = [
         entry: "./src/electron.js",
         target: 'electron-renderer',
         module: {
-          rules: [
-            {
-              test: /\.(js|jsx)$/,
-              include: /src/,
-              exclude: /(node_modules|bower_components)/,
-              loader: "babel-loader",
-              options: { presets: ["@babel/env"] }
-            },
-            {
-              test: /\.css$/,
-              use: ["style-loader", "css-loader"]
-            }
-          ]
+          rules: module_rules
         },
         output: {
-          path: path.resolve(__dirname, "dist/"),
-          publicPath: "/dist/",
+          path: __dirname + '/dist',
           filename: "electron.js"
         }
     },
@@ -38,19 +55,7 @@ module.exports = [
         target: 'electron-renderer',
         devtool: 'source-map',
         module: {
-            rules: [
-                {
-                    test: /\.(js|jsx)$/,
-                    include: /src/,
-                    exclude: /(node_modules|bower_components)/,
-                    loader: "babel-loader",
-                    options: { presets: ["@babel/env"] }
-                },
-                {
-                  test: /\.css$/,
-                  use: ["style-loader", "css-loader"]
-                }
-            ]
+            rules: module_rules
         },
         output: {
           path: __dirname + '/dist',

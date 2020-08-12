@@ -1,11 +1,11 @@
 import React, { Component} from "react";
-import "../styles/Binder.css";
+import "../styles/Binder.scss";
 import Page from "./Page"
 
 class App extends Component {
     render() {
         return (
-            <div className="binder">
+            <div className="Binder">
                 <Page />
             </div>
         );
