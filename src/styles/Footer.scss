@@ -1,0 +1,9 @@
+@import '_variables.scss';
+
+.Footer {
+    background: $theme-color;
+    height: 2rem;
+    width: 88vw;
+    margin: auto;
+    box-shadow: 0px -14px 18px -9px rgba(0,0,0,0.75);
+}

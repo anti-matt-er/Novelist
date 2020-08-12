@@ -1,9 +1,10 @@
 import React, { Component} from "react";
+import "../styles/Footer.scss";
 
 class App extends Component {
     render() {
         return (
-            <div></div>
+            <div className="Footer"></div>
         );
     }
 }
