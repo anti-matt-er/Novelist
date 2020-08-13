@@ -51,28 +51,28 @@ class Header extends Component {
                         className="min"
                         onClick={this.minimize.bind(this)}
                     >
-                        🗕
+                        &#xE921;
                     </button>
                     { this.state.maximized ?
                         <button
                             className="restore"
                             onClick={this.restore.bind(this)}
                         >
-                            🗗
+                            &#xE923;
                         </button>
                     :
                         <button
                             className="max"
                             onClick={this.maximize.bind(this)}
                         >
-                            🗖
+                            &#xE922;
                         </button>
                     }
                     <button
                         className="close"
                         onClick={this.close.bind(this)}
                     >
-                        🗙
+                        &#xE8BB;
                     </button>
                 </nav>
             </div>

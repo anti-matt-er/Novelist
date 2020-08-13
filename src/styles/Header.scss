@@ -1,14 +1,17 @@
 @import '_variables.scss';
 
 .Header {
-    height: 2rem;
     color: lighten($theme-color, 50%);
     -webkit-app-region: drag;
 
     .title {
-        line-height: 2.5rem;
-        padding-left: 1rem;
-        float: left;
+        line-height: 32px;
+        padding: 2px 0 0;
+        position: fixed;
+        font-size: 12px;
+        text-align: center;
+        width: 80%;
+        margin-left: 10%;
     }
 
     .window-buttons {
@@ -21,19 +24,29 @@
             border: none;
             color: inherit;
             font-weight: 300;
-            width: 2.5rem;
-            height: 2rem;
-            font-size: 1.25rem;
+            line-height: 1.5rem;
+            font-size: 10px;
+            width: 46px;
+            height: 32px;
+            padding: 0;
             outline: none;
+            font-family: segoe;
 
             &:hover {
                 color: white;
+                background: rgba(255, 255, 255, 0.15);
             }
         }
 
         .min {
             position: relative;
-            top: -0.25em;
+            line-height: -0.5em;
+        }
+
+        .close {
+            &:hover {
+                background: $window-chrome-close-color;
+            }
         }
     }
 }
