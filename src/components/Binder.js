@@ -6,7 +6,9 @@ class App extends Component {
     render() {
         return (
             <div className="Binder">
-                <Page />
+                <div className="scrollWrapper">
+                    <Page />
+                </div>
             </div>
         );
     }

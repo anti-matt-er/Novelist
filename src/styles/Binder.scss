@@ -5,7 +5,7 @@
     margin: auto auto 0;
     background: lighten($theme-color, 10%);
     font-family: Courier, monospace;
-    padding: 2px 0.75rem;
+    padding: 2px 0.75rem 0 0;
     font-size: 17px;
     height: 100%;
     max-height: 100%;
@@ -13,8 +13,10 @@
     border-radius: 8px 8px 0 0;
     color: darken(white, 10%);
 
-    strong, em {
-        color: white;
+    .scrollWrapper {
+        padding: 0 1.25rem 0 2rem;
+        overflow-y: scroll;
+        height: 100%;
     }
 
     em {
