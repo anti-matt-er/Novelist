@@ -7,5 +7,9 @@
     border: none;
     resize: none;
     overflow-y: scroll;
-    cursor: auto;
+    cursor: default;
+
+    > * {
+        cursor: text;
+    }
 }
