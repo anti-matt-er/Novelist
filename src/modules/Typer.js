@@ -6,14 +6,16 @@ Marked.setOptions({
     breaks: true,
     smartypants: true
 });
-const turndown = new Turndown();
+const turndown = new Turndown({
+    emDelimiter: '*',
+    bulletListMarker: '-'
+});
 const turndownPluginGfm = require('turndown-plugin-gfm');
 turndown.use(turndownPluginGfm.gfm);
 const sanitizePrefs = {
     allowedTags: [ 'em', 'strong', 'ul', 'ol', 'li', 'p', 'br', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'hr'],
     allowedAttributes: {}
 }
-const caretCode = '\uffff';
 
 class Typer {
     constructor() {
@@ -23,9 +25,7 @@ class Typer {
 
     setHtml(html) {
         this.html = html;
-        this.sanitize();
         this.setMd(this.htmlToMarkdown(this.html));
-        console.log(this.md);
     }
 
     setMd(md) {
@@ -44,7 +44,6 @@ class Typer {
 
     sanitize() {
         this.html = SanitizeHtml(this.html, sanitizePrefs);
-        //this.fixTags();
     }
 
     markdownToHtml(md) {
@@ -53,43 +52,6 @@ class Typer {
 
     htmlToMarkdown(html) {
         return turndown.turndown(html);
-    }
-
-    fixTags() {
-        this.html = this.html.replace(/(?<=\S)</g, ' <');
-        this.html = this.html.replace(/>(?=\S)/g, '> ');
-    }
-
-    setHtmlCaret(pos) {
-        this.setHtml([
-            this.html.slice(0, position),
-            caretCode,
-            this.html.slice(position)
-        ].join(''));
-    }
-
-    setMdCaret(pos) {
-        this.setMd([
-            this.md.slice(0, position),
-            caretCode,
-            this.md.slice(position)
-        ].join(''));
-    }
-
-    getHtmlCaret() {
-        var pos = this.html.indexOf(caretCode);
-        if (pos == -1) return 0;
-        this.html.replace(caretCode, '');
-        this.setHtml(this.html);
-        return pos;
-    }
-
-    getMdCaret() {
-        var pos = this.md.indexOf(caretCode);
-        if (pos == -1) return 0;
-        this.md.replace(caretCode, '');
-        this.setMd(this.md);
-        return pos;
     }
 }
 
