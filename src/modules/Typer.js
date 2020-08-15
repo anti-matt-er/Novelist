@@ -12,6 +12,12 @@ const turndown = new Turndown({
 });
 const turndownPluginGfm = require('turndown-plugin-gfm');
 turndown.use(turndownPluginGfm.gfm);
+turndown.addRule('breaks', {
+    filter: 'br',
+    replacement: function() {
+        return '<br />';
+    }
+});
 const sanitizePrefs = {
     allowedTags: [ 'em', 'strong', 'ul', 'ol', 'li', 'p', 'br', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'hr'],
     allowedAttributes: {}

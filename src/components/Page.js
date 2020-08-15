@@ -6,7 +6,9 @@ import Typer from "../modules/Typer";
 import "../styles/Page.scss";
 import Filler from "../resources/filler.md";
 
-const contentChangeTimeout = 500;
+const contentChangeTimeout = 5000;
+
+document.execCommand("defaultParagraphSeparator", false, "p");
 
 class Page extends Component {
   constructor() {
