@@ -14,6 +14,8 @@ class Page extends Component {
     this.contentEditable = React.createRef();
     this.typer = new Typer();
     this.typer.setMd(Filler);
+    var html = this.typer.getHtml();
+    this.typer.setHtml(html);
     this.previousHtml = this.typer.getHtml();
     this.contentChangeTimer = null;
     this.state = {
