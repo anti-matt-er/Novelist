@@ -17,3 +17,11 @@ class App extends Component {
 }
 
 export default App;
+
+function getLangCode() {
+    let env = process.env;
+    let rawCode = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
+    return rawCode.split('.')[0].replace('_', '-');
+}
+
+console.log(getLangCode());
