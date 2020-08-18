@@ -15,6 +15,7 @@ class Page extends Component {
   constructor() {
     super();
     this.contentEditable = React.createRef();
+    this.annotation = React.createRef();
     this.typer = new Typer();
     this.typer.setMd(Filler);
     var html = this.typer.getHtml();
@@ -53,13 +54,6 @@ class Page extends Component {
         html: annotation.annotatedHtml,
         mistakes: annotation.mistakes
       }, () => {
-        let annotations = this.contentEditable.current.querySelectorAll(".mistake");
-        for (const annotation of annotations) {
-          annotation.addEventListener("click", (e) => {
-            this.showAnnotation(annotation.dataset.annotation)
-            e.stopPropagation();
-          });
-        }
         let sel = Rangy.getSelection();
         let range = sel.getRangeAt(0);
         range.selectCharacters(node, caret.start, caret.start);
@@ -69,14 +63,32 @@ class Page extends Component {
     });
   }
 
-  showAnnotation(id) {
-    console.log("Hello, an id: " + id);
+  handleAnnotation(e) {
+    let node = e.target;
+    if (node.classList.contains("mistake")) {
+      let targetRect = node.getBoundingClientRect();
+      this.showAnnotation(node.dataset.annotation, () => {
+        this.annotation.current.style.top = targetRect.bottom + "px";
+        this.annotation.current.style.left = targetRect.left + "px";
+        node = document.querySelector(".mistake[data-annotation=\"" + node.dataset.annotation + "\"]");
+        node.classList.add("annotating");
+      });
+    } else {
+      this.hideAnnotation();
+    }
+  }
+
+  showAnnotation(id, callback) {
+    this.resetMistakeStyles();
     this.setState({
       displayAnnotation: parseInt(id)
+    }, () => {
+      callback();
     });
   }
 
   hideAnnotation() {
+    this.resetMistakeStyles();
     this.setState({
       displayAnnotation: -1
     });
@@ -84,6 +96,13 @@ class Page extends Component {
 
   replaceMistake(id, suggestion) {
     // something
+  }
+
+  resetMistakeStyles() {
+    let mistakes = document.querySelectorAll(".mistake");
+    for (const mistake of mistakes) {
+      mistake.classList.remove("annotating");
+    }
   }
 
   render() {
@@ -94,7 +113,7 @@ class Page extends Component {
         <div key={index} className="Suggestion" onClick={this.replaceMistake(this.state.displayAnnotation, suggestion.value)}>{suggestion.value}</div>
       );
       Annotation =
-      <div className="Annotation">
+      <div className="Annotation" ref={this.annotation}>
         <div className="Message">{mistake.message}</div>
         {mistake.replacements.length > 0 &&
           <div className="Suggestions">{suggestions}</div>
@@ -103,7 +122,7 @@ class Page extends Component {
     }
 
     return (
-      <div>
+      <div className="scrollWrapper">
         {Annotation}
         <ContentEditable
           className="Page"
@@ -112,6 +131,7 @@ class Page extends Component {
           html={this.state.html}
           onChange={this.handleChange.bind(this)}
           onClick={this.hideAnnotation.bind(this)}
+          onContextMenu={this.handleAnnotation.bind(this)}
         />
       </div>
     );
