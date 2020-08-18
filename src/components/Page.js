@@ -22,6 +22,7 @@ class Page extends Component {
     this.typer.setHtml(html);
     this.previousHtml = this.typer.getHtml();
     this.contentChangeTimer = null;
+    this.caret;
     this.state = {
         html: this.previousHtml,
         mistakes: [],
@@ -47,20 +48,27 @@ class Page extends Component {
       return;
     }
     Proofread.checkHtml(this.typer.getHtml(), (annotation) => {
-      let node = this.contentEditable.current;
-      let caret = Rangy.getSelection().getRangeAt(0).toCharacterRange(node);
+      this.storeCaret();
   
       this.setState({
         html: annotation.annotatedHtml,
         mistakes: annotation.mistakes
-      }, () => {
-        let sel = Rangy.getSelection();
-        let range = sel.getRangeAt(0);
-        range.selectCharacters(node, caret.start, caret.start);
-        sel.setSingleRange(range);
-        node.focus();
-      });
+      }, this.restoreCaret);
     });
+  }
+
+  storeCaret() {
+    let node = this.contentEditable.current;
+    this.caret = Rangy.getSelection().getRangeAt(0).toCharacterRange(node);
+  }
+
+  restoreCaret() {
+    let node = this.contentEditable.current;
+    let sel = Rangy.getSelection();
+    let range = sel.getRangeAt(0);
+    range.selectCharacters(node, this.caret.start, this.caret.start);
+    sel.setSingleRange(range);
+    node.focus();
   }
 
   handleAnnotation(e) {
@@ -80,18 +88,21 @@ class Page extends Component {
 
   showAnnotation(id, callback) {
     this.resetMistakeStyles();
+    this.storeCaret();
     this.setState({
       displayAnnotation: parseInt(id)
     }, () => {
       callback();
+      this.restoreCaret();
     });
   }
 
   hideAnnotation() {
     this.resetMistakeStyles();
+    this.storeCaret();
     this.setState({
       displayAnnotation: -1
-    });
+    }, this.restoreCaret);
   }
 
   replaceMistake(id, suggestion) {
