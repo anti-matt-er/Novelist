@@ -22,7 +22,8 @@ class Proofread {
         let mistakes = [];
         let params = {
             language: this.getLangCode(),
-            text: text
+            text: text,
+            disabledRules: "PROFANITY"
         };
         LanguageTool.check(params, function(err, res) {
             if (err) {
