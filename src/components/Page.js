@@ -32,10 +32,13 @@ class Page extends Component {
   }
 
   handleChange(e) {
-    var newContent = e.target.value;
-    if (newContent == this.previousHtml) {
+    let newContent = e.target.value;
+    if (Typer.sanitizeHtml(newContent) == Typer.sanitizeHtml(this.previousHtml)) {
+      this.storeCaret();
+      this.restoreCaret();
       return;
     }
+    console.log(newContent);
 
     clearTimeout(this.contentChangeTimer);
     this.contentChangeTimer = setTimeout(this.handleContent.bind(this), contentChangeTimeout, newContent);
@@ -49,6 +52,7 @@ class Page extends Component {
     }
     Proofread.checkHtml(this.typer.getHtml(), (annotation) => {
       this.storeCaret();
+      this.previousHtml = annotation.annotatedHtml;
   
       this.setState({
         html: annotation.annotatedHtml,
@@ -98,6 +102,7 @@ class Page extends Component {
   }
 
   hideAnnotation() {
+    if (this.state.displayAnnotation == -1) return;
     this.resetMistakeStyles();
     this.storeCaret();
     this.setState({
@@ -105,8 +110,13 @@ class Page extends Component {
     }, this.restoreCaret);
   }
 
-  replaceMistake(id, suggestion) {
-    // something
+  replaceMistake(e, suggestion) {
+    console.log("replacey");
+    let mistakeNode = document.querySelector(".mistake[data-annotation=\"" + this.state.displayAnnotation + "\"]");
+    let replacement = document.createTextNode(suggestion);
+    mistakeNode.parentNode.replaceChild(replacement, mistakeNode);
+    let newHtml = this.contentEditable.current.innerHTML;
+    this.handleContent(newHtml);
   }
 
   resetMistakeStyles() {
@@ -121,7 +131,7 @@ class Page extends Component {
     if (this.state.displayAnnotation != -1) {
       let mistake = this.state.mistakes[this.state.displayAnnotation];
       let suggestions = mistake.replacements.map((suggestion, index) =>
-        <div key={index} className="Suggestion" onClick={this.replaceMistake(this.state.displayAnnotation, suggestion.value)}>{suggestion.value}</div>
+        <div key={index} className="Suggestion" onClick={(e) => this.replaceMistake(e, suggestion.value)}>{suggestion.value}</div>
       );
       Annotation =
       <div className="Annotation" ref={this.annotation}>
@@ -133,7 +143,10 @@ class Page extends Component {
     }
 
     return (
-      <div className="scrollWrapper">
+      <div
+        className="scrollWrapper"
+        onClick={this.hideAnnotation.bind(this)}
+      >
         {Annotation}
         <ContentEditable
           className="Page"
@@ -141,7 +154,6 @@ class Page extends Component {
           innerRef={this.contentEditable}
           html={this.state.html}
           onChange={this.handleChange.bind(this)}
-          onClick={this.hideAnnotation.bind(this)}
           onContextMenu={this.handleAnnotation.bind(this)}
         />
       </div>

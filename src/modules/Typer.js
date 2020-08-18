@@ -59,6 +59,10 @@ class Typer {
     htmlToMarkdown(html) {
         return turndown.turndown(html);
     }
+
+    static sanitizeHtml(html) {
+        return SanitizeHtml(html, sanitizePrefs);
+    }
 }
 
 export default Typer;

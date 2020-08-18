@@ -62,7 +62,6 @@ class Proofread {
                     offset += annotationHtml.length - content.length;
                     id += 1;
                 });
-                console.log(mistakes);
                 callback({
                     annotatedHtml: annotatedHtml,
                     mistakes: mistakes
