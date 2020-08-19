@@ -17,18 +17,20 @@ class Page extends Component {
     this.contentEditable = React.createRef();
     this.annotation = React.createRef();
     this.typer = new Typer();
-    this.typer.setMd(Filler);
-    var html = this.typer.getHtml();
-    this.typer.setHtml(html);
-    this.previousHtml = this.typer.getHtml();
-    this.contentChangeTimer = null;
+    this.previousHtml;
+    this.contentChangeTimer;
     this.caret;
     this.state = {
-        html: this.previousHtml,
+        html: "",
         mistakes: [],
         displayAnnotation: -1
     };
     Rangy.init();
+  }
+
+  componentDidMount() {
+    this.typer.setMd(Filler);
+    this.handleContent(this.typer.getHtml());
   }
 
   handleChange(e) {
@@ -63,12 +65,15 @@ class Page extends Component {
 
   storeCaret() {
     let node = this.contentEditable.current;
-    this.caret = Rangy.getSelection().getRangeAt(0).toCharacterRange(node);
+    let sel = Rangy.getSelection();
+    if (sel.rangeCount == 0) return;
+    this.caret = sel.getRangeAt(0).toCharacterRange(node);
   }
 
   restoreCaret() {
     let node = this.contentEditable.current;
     let sel = Rangy.getSelection();
+    if (sel.rangeCount == 0) return;
     let range = sel.getRangeAt(0);
     range.selectCharacters(node, this.caret.start, this.caret.start);
     sel.setSingleRange(range);
