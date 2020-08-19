@@ -7,7 +7,7 @@ import Proofread from "../modules/Proofread";
 import "../styles/Page.scss";
 import Filler from "../resources/filler.md";
 
-const contentChangeTimeout = 500;
+const contentChangeTimeout = 1000;
 
 document.execCommand("defaultParagraphSeparator", false, "p");
 
@@ -40,8 +40,7 @@ class Page extends Component {
       this.restoreCaret();
       return;
     }
-    console.log(newContent);
-
+    Proofread.abortCheck();
     clearTimeout(this.contentChangeTimer);
     this.contentChangeTimer = setTimeout(this.handleContent.bind(this), contentChangeTimeout, newContent);
   };
@@ -52,10 +51,16 @@ class Page extends Component {
     if (content == this.typer.getHtml()) {
       return;
     }
-    Proofread.checkHtml(this.typer.getHtml(), (annotation) => {
-      this.storeCaret();
+    this.storeCaret();
+    this.setState({
+      html: this.typer.getHtml()
+    }, this.restoreCaret);
+    this.proofread(this.typer.getHtml());
+  }
+
+  proofread(content) {
+    Proofread.checkHtml(content, (annotation) => {
       this.previousHtml = annotation.annotatedHtml;
-  
       this.setState({
         html: annotation.annotatedHtml,
         mistakes: annotation.mistakes
@@ -116,7 +121,6 @@ class Page extends Component {
   }
 
   replaceMistake(e, suggestion) {
-    console.log("replacey");
     let mistakeNode = document.querySelector(".mistake[data-annotation=\"" + this.state.displayAnnotation + "\"]");
     let replacement = document.createTextNode(suggestion);
     mistakeNode.parentNode.replaceChild(replacement, mistakeNode);

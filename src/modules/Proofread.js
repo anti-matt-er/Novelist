@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-const LanguageTool = require("languagetool-api");
+let controller = null;
 
 class Proofread {
     static checkHtml(html, callback) {
@@ -25,11 +25,23 @@ class Proofread {
             text: text,
             disabledRules: "PROFANITY"
         };
-        LanguageTool.check(params, function(err, res) {
-            if (err) {
-                console.log(err);
-            } else{
-                for (const match of res.matches) {
+        let query = "";
+        for (var key in params) {
+            if (query != "") {
+                query += "&";
+            }
+            query += key + "=" + encodeURIComponent(params[key]);
+        }
+        let url = encodeURI("https://languagetool.org/api/v2/check");
+        controller = new AbortController();
+        const signal = controller.signal;
+        fetch(url, {
+            method: 'post',
+            body: query,
+            signal: signal
+        }).then(function(response) {
+            response.json().then(function(data) {
+                for (const match of data.matches) {
                     let index = match.offset;
                     for (var i = markupMap.length - 1; i >= 0; i--) {
                         let map = markupMap[i];
@@ -63,12 +75,21 @@ class Proofread {
                     offset += annotationHtml.length - content.length;
                     id += 1;
                 });
+                controller = null;
                 callback({
                     annotatedHtml: annotatedHtml,
                     mistakes: mistakes
                 });
-            }
+            });
+        }).catch((e) => {
+            console.log(e);
         });
+    }
+
+    static abortCheck() {
+        if (controller) {
+            controller.abort();
+        }
     }
 
     static getLangCode() {
