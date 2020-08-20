@@ -8,7 +8,8 @@
     "start": "npm run webpack-build",
     "webpack-live": "webpack --watch",
     "webpack-build": "webpack",
-    "electron-start": "electron ./dist/electron.js"
+    "electron-start": "electron ./dist/electron.js",
+    "install": "node install-jre.js"
   },
   "author": "anti-matt-er",
   "devDependencies": {
@@ -42,7 +43,9 @@
     "webpack-dev-server": "^3.11.0",
     "webpack-electron-reload": "^1.0.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "node-java-connector": "^0.1.3"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
