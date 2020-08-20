@@ -32,7 +32,7 @@ class Proofread {
             }
             query += key + "=" + encodeURIComponent(params[key]);
         }
-        let url = encodeURI("https://languagetool.org/api/v2/check");
+        let url = encodeURI("http://localhost:8081/v2/check");
         controller = new AbortController();
         const signal = controller.signal;
         fetch(url, {

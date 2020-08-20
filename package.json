@@ -4,13 +4,14 @@
   "description": "Novel & creative writing tool",
   "main": "main.js",
   "scripts": {
-    "live": "npm run webpack-live",
-    "start": "npm run webpack-build",
+    "live": "concurrently \"npm:languagetool-start\" \"npm:webpack-live\"",
+    "start": "concurrently \"npm:languagetool-start\" \"npm:webpack-build\"",
     "webpack-live": "webpack --watch",
     "webpack-build": "webpack",
     "electron-start": "electron ./dist/electron.js",
+    "languagetool-start": "node ./src/languagetool.js",
     "install": "node install-jre.js",
-    "postinstall": "npx patch-package" 
+    "postinstall": "npx patch-package"
   },
   "author": "anti-matt-er",
   "devDependencies": {
