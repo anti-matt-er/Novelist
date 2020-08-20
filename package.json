@@ -9,7 +9,8 @@
     "webpack-live": "webpack --watch",
     "webpack-build": "webpack",
     "electron-start": "electron ./dist/electron.js",
-    "install": "node install-jre.js"
+    "install": "node install-jre.js",
+    "postinstall": "npx patch-package" 
   },
   "author": "anti-matt-er",
   "devDependencies": {
