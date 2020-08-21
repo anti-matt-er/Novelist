@@ -37,7 +37,7 @@ class Page extends Component {
     let newContent = e.target.value;
     if (Typer.sanitizeHtml(newContent) == Typer.sanitizeHtml(this.previousHtml)) {
       this.storeCaret();
-      this.restoreCaret();
+      this.restoreCaret(true);
       return;
     }
     Proofread.abortCheck();
@@ -54,7 +54,9 @@ class Page extends Component {
     this.storeCaret();
     this.setState({
       html: this.typer.getHtml()
-    }, this.restoreCaret);
+    }, () => {
+      this.restoreCaret(false)
+    });
     this.proofread(this.typer.getHtml());
   }
 
@@ -64,7 +66,9 @@ class Page extends Component {
       this.setState({
         html: annotation.annotatedHtml,
         mistakes: annotation.mistakes
-      }, this.restoreCaret);
+      }, () => {
+        this.restoreCaret(false)
+      });
     });
   }
 
@@ -75,12 +79,17 @@ class Page extends Component {
     this.caret = sel.getRangeAt(0).toCharacterRange(node);
   }
 
-  restoreCaret() {
+  restoreCaret(selection) {
     let node = this.contentEditable.current;
     let sel = Rangy.getSelection();
     if (sel.rangeCount == 0) return;
     let range = sel.getRangeAt(0);
-    range.selectCharacters(node, this.caret.start, this.caret.start);
+    let start = this.caret.start;
+    let end = this.caret.end;
+    if (!selection) {
+      end = start;
+    }
+    range.selectCharacters(node, start, end);
     sel.setSingleRange(range);
     node.focus();
   }
@@ -107,7 +116,7 @@ class Page extends Component {
       displayAnnotation: parseInt(id)
     }, () => {
       callback();
-      this.restoreCaret();
+      this.restoreCaret(true);
     });
   }
 
@@ -117,7 +126,9 @@ class Page extends Component {
     this.storeCaret();
     this.setState({
       displayAnnotation: -1
-    }, this.restoreCaret);
+    }, () => {
+      this.restoreCaret(true)
+    });
   }
 
   replaceMistake(e, suggestion) {
