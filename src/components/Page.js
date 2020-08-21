@@ -30,7 +30,11 @@ class Page extends Component {
 
   componentDidMount() {
     this.typer.setMd(Filler);
-    this.handleContent(this.typer.getHtml());
+    this.setState({
+      html: this.typer.getHtml()
+    }, () => {
+      this.proofread(this.typer.getHtml());
+    })
   }
 
   handleChange(e) {

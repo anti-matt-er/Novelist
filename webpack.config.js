@@ -36,17 +36,7 @@ const module_rules = [
   },
   {
     test: /\.md$/,
-    use: [
-      {
-        loader: "html-loader",
-      },
-      {
-        loader: "markdown-loader",
-        options: {
-          /* your options here */
-        },
-      },
-    ],
+    loader: "raw-loader"
   },
   {
     test: /\.(woff|ttf|otf|eot|woff2|svg)$/i,
